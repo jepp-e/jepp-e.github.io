@@ -1,13 +1,117 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<title>Page Title</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Page with Icons</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#0b0b0b;
+      --muted:#666;
+      --accent:#111;
+      --button-bg:#f2f2f2;
+      --button-border:#e0e0e0;
+      --maxw:720px;
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      min-height:100vh;
+    }
+    .card{
+      width:100%;
+      max-width:var(--maxw);
+      text-align:center;
+      padding:28px;
+      border:1px solid #f0f0f0;
+      border-radius:16px;
+      box-shadow:0 6px 22px rgba(10,10,10,0.06);
+    }
+    .title{
+      font-size:20px;
+      font-weight:700;
+      margin:0 0 8px;
+    }
+    .bio{
+      margin:0 0 20px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .small{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* ICONS */
+    .icons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .icons a {
+      font-size: 28px;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.6);
+      transition: transform 0.2s;
+    }
+    .icons a:hover {
+      transform: scale(1.1);
+    }
+
+    /* Dark mode */
+    @media (prefers-color-scheme:dark){
+      :root{
+        --bg:#0b0b0d;
+        --text:#f3f3f3;
+        --muted:#b8b8b8;
+        --accent:#fff;
+        --button-bg:#111214;
+        --button-border:#222426;
+      }
+      .card{border-color:rgba(255,255,255,0.03); box-shadow:none;}
+    }
+  </style>
+  <!-- Font Awesome for icons -->
+  <script src="https://kit.fontawesome.com/a2e0ad6d3b.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <main class="card">
+    <h1 class="title">Jeppe</h1>
+    <p class="bio">You can find all my links here.</p>
 
-<h1>test123</h1>
-<p>dsgsddsfgffgf</p>
+    <!-- ICONS Section -->
+    <div class="icons">
+      <a href="https://discord.com/users/943247621974265956" target="_blank" aria-label="Discord" style="background:rgba(0,0,0,0.6);">
+    <img src="https://simpleicons.org/icons/discord.svg" alt="Discord" style="width:28px; height:28px; filter: brightness(0) invert(1);">
+      </a>
+      <a href="https://twitter.com/yourprofile" target="_blank" aria-label="Twitter">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="https://instagram.com/yourprofile" target="_blank" aria-label="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://github.com/yourprofile" target="_blank" aria-label="GitHub">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
 
+    
+  </main>
 </body>
 </html>
-
