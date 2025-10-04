@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Simple Page with Icons</title>
+  <title>Simple Page with Video Background</title>
   <style>
     :root{
       --bg:#ffffff;
@@ -24,7 +24,31 @@
       justify-content:center;
       padding:32px;
       min-height:100vh;
+      position: relative;
+      z-index: 0;
     }
+    /* Background video */
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2; /* keeps video in the background */
+    }
+
+    /* Dark overlay to make text readable */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: -1;
+    }
+
     .card{
       width:100%;
       max-width:var(--maxw);
@@ -32,7 +56,8 @@
       padding:28px;
       border:1px solid #f0f0f0;
       border-radius:16px;
-      box-shadow:0 6px 22px rgba(10,10,10,0.06);
+      box-shadow:0 6px 22px rgba(10,10,10,0.3);
+      background: rgba(255,255,255,0.85); /* semi-transparent background */
     }
     .title{
       font-size:20px;
@@ -84,21 +109,29 @@
         --button-bg:#111214;
         --button-border:#222426;
       }
-      .card{border-color:rgba(255,255,255,0.03); box-shadow:none;}
+      .card{border-color:rgba(255,255,255,0.03); background: rgba(20,20,20,0.85);}
     }
   </style>
   <!-- Font Awesome for icons -->
   <script src="https://kit.fontawesome.com/a2e0ad6d3b.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <!-- Background video -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="assets/bg.mp4" type="video/mp4">
+    Your browser does not support HTML5 video.
+  </video>
+  <!-- Dark overlay -->
+  <div class="overlay"></div>
+
   <main class="card">
     <h1 class="title">Jeppe</h1>
     <p class="bio">You can find all my links here.</p>
 
     <!-- ICONS Section -->
     <div class="icons">
-      <a href="https://discord.com/users/943247621974265956" target="_blank" aria-label="Discord" style="background:rgba(0,0,0,0.6);">
-    <img src="https://simpleicons.org/icons/discord.svg" alt="Discord" style="width:28px; height:28px; filter: brightness(0) invert(1);">
+      <a href="https://discord.com/users/943247621974265956" target="_blank" aria-label="Discord">
+        <img src="https://simpleicons.org/icons/discord.svg" alt="Discord" style="width:28px; height:28px; filter: brightness(0) invert(1);">
       </a>
       <a href="https://twitter.com/yourprofile" target="_blank" aria-label="Twitter">
         <i class="fab fa-twitter"></i>
@@ -110,8 +143,6 @@
         <i class="fab fa-github"></i>
       </a>
     </div>
-
-    
   </main>
 </body>
 </html>
