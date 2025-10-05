@@ -5,32 +5,32 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Jeppe's page</title>
   <style>
-    :root{
-      --bg:#ffffff;
-      --text:#0b0b0b;
-      --muted:#666;
-      --accent:#111;
-      --button-bg:#f2f2f2;
-      --button-border:#e0e0e0;
-      --maxw:640px;
-      font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    :root {
+      --bg: #ffffff;
+      --text: #0b0b0b;
+      --muted: #666;
+      --accent: #111;
+      --button-bg: #f2f2f2;
+      --button-border: #e0e0e0;
+      --maxw: 640px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
 
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden; /* Disable scrolling */
+      overflow: hidden;
     }
 
-    body{
-      background:var(--bg);
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:32px;
-      min-height:100vh;
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      min-height: 100vh;
       position: relative;
       z-index: 0;
     }
@@ -45,16 +45,16 @@
       z-index: -2;
     }
 
-    .card{
-      width:100%;
-      max-width:var(--maxw);
-      text-align:center;
-      padding:28px;
-      border:1px solid rgba(255,255,255,0.3);
-      border-radius:16px;
-      box-shadow:0 6px 22px rgba(10,10,10,0.3);
-      background: rgba(255,255,255,0.25); /* translucent */
-      backdrop-filter: blur(12px); /* Blur video background */
+    .card {
+      width: 100%;
+      max-width: var(--maxw);
+      text-align: center;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 16px;
+      box-shadow: 0 6px 22px rgba(10,10,10,0.3);
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
 
@@ -74,10 +74,10 @@
       margin: 0 0 8px;
     }
 
-    .bio{
-      margin:0 0 20px;
-      color:var(--muted);
-      font-size:14px;
+    .bio {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .icons {
@@ -87,6 +87,7 @@
       gap: 16px;
       margin-top: 20px;
     }
+
     .icons a {
       font-size: 28px;
       color: white;
@@ -100,16 +101,18 @@
       background: rgba(0,0,0,0.6);
       transition: transform 0.2s;
     }
+
     .icons a:hover {
       transform: scale(1.1);
     }
 
-    @media (prefers-color-scheme:dark){
-      :root{
-        --bg:#0b0b0d;
-        --text:#f3f3f3;
-        --muted:#b8b8b8;
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0b0d;
+        --text: #f3f3f3;
+        --muted: #b8b8b8;
       }
+
       .card {
         border-color: rgba(255,255,255,0.1);
         background: rgba(20,20,20,0.25);
@@ -118,7 +121,6 @@
       }
     }
   </style>
-  <script src="https://kit.fontawesome.com/a2e0ad6d3b.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <video autoplay muted loop playsinline id="bg-video">
@@ -127,7 +129,7 @@
   </video>
 
   <main class="card">
-    <img class="pfp" src="https://cdn.discordapp.com/avatars/943247621974265956/20b91951d043db6e91d5856d22ec1876.png?size=512" alt="Profile picture"> <!-- ✅ Added here -->
+    <img class="pfp" src="https://cdn.discordapp.com/avatars/943247621974265956/20b91951d043db6e91d5856d22ec1876.png?size=512" alt="Profile picture">
     <h1 class="title">Jeppe</h1>
     <p class="bio">You can find all my links here.</p>
 
