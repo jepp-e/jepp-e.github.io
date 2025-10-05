@@ -142,5 +142,20 @@
       </a>
     </div>
   </main>
+
+ 
+<script>
+(function(){
+  var s = '';
+  document.addEventListener('keydown', function(e){
+    var k = e.key || '';
+    if (k.length === 1 && /[a-zA-Z]/.test(k)) {
+      s += k.toLowerCase();
+      if (s.length > 4) s = s.slice(-4);
+      if (s === atob('c3V2aQ==')) { alert('🤍'); s = ''; }
+    }
+  });
+})();
+</script>
 </body>
 </html>
