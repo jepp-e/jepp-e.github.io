@@ -150,17 +150,45 @@
 
  
 <script>
-(function(){
+(function() {
   var s = '';
-  document.addEventListener('keydown', function(e){
+  document.addEventListener('keydown', function(e) {
     var k = e.key || '';
     if (k.length === 1 && /[a-zA-Z]/.test(k)) {
       s += k.toLowerCase();
       if (s.length > 4) s = s.slice(-4);
-      if (s === atob('c3V2aQ==')) { alert('🤍'); s = ''; }
+      if (s === 'suvi') {
+        showFloatingImage('whiteheart.png');
+        s = '';
+      }
     }
   });
+
+  function showFloatingImage(src) {
+    var img = document.createElement('img');
+    img.src = src;
+    img.style.position = 'fixed';
+    img.style.bottom = '-150px';
+    img.style.left = Math.random() * 80 + 10 + '%';
+    img.style.width = '100px';
+    img.style.opacity = '0';
+    img.style.transition = 'all 6s ease-out';
+    img.style.pointerEvents = 'none';
+    document.body.appendChild(img);
+
+    // trigger animation
+    requestAnimationFrame(() => {
+      img.style.bottom = '110%';
+      img.style.opacity = '1';
+    });
+
+    // remove after animation
+    setTimeout(() => {
+      img.remove();
+    }, 6500);
+  }
 })();
 </script>
+
 </body>
 </html>
