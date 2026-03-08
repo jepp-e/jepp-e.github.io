@@ -7,78 +7,14 @@
 <body>
   <h1>watch</h1>
   <input id="id" placeholder="IMDB ID (e.g. tt1234567)" />
-  <button onclick="find()">find stream</button>
-  <p id="status"></p>
-  <div id="links"></div>
+  <button onclick="play()">play</button>
+  <br><br>
+  <iframe id="player" width="800" height="450" allowfullscreen allow="autoplay"></iframe>
 
   <script>
-    const proxies = [
-      url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-      url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-      url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    ];
-
-    async function fetchWith(url) {
-      for (const proxy of proxies) {
-        try {
-          const res = await fetch(proxy(url), { signal: AbortSignal.timeout(5000) });
-          if (res.ok) return await res.text();
-        } catch {}
-      }
-      return '';
-    }
-
-    function extractUrls(text) {
-      return [
-        ...text.matchAll(/https?:\/\/[^\s"'\\]+\.m3u8[^\s"'\\]*/g),
-        ...text.matchAll(/https?:\/\/[^\s"'\\]+\.mp4[^\s"'\\]*/g),
-        ...text.matchAll(/https?:\/\/cloudnestra\.com\/[^\s"'\\]*/g),
-      ].map(m => m[0]);
-    }
-
-    async function find() {
+    function play() {
       const id = document.getElementById('id').value.trim();
-      document.getElementById('links').innerHTML = '';
-      const found = new Set();
-
-      const show = url => {
-        if (found.has(url)) return;
-        found.add(url);
-        const a = document.createElement('a');
-        a.href = url; a.textContent = url; a.target = '_blank';
-        a.style.display = 'block';
-        document.getElementById('links').appendChild(a);
-      };
-
-      // Try vidsrc internal API endpoints
-      const apiUrls = [
-        `https://vidsrc.to/vapi/movie/imdb/${id}`,
-        `https://vidsrc.me/vapi/movie/${id}/1/1`,
-        `https://vidsrc.xyz/vapi/movie/${id}`,
-        `https://vidsrc.to/embed/movie/${id}`,
-      ];
-
-      for (const url of apiUrls) {
-        document.getElementById('status').textContent = `Trying ${url}...`;
-        const text = await fetchWith(url);
-        extractUrls(text).forEach(show);
-
-        // chase nested src= and file: references
-        const nested = [
-          ...(text.matchAll(/["']src["']\s*:\s*["'](https?[^"']+)["']/g)),
-          ...(text.matchAll(/file\s*:\s*["'](https?[^"']+)["']/g)),
-          ...(text.matchAll(/src=["'](https?[^"']+)["']/g)),
-        ].map(m => m[1]);
-
-        for (const n of nested) {
-          const t2 = await fetchWith(n);
-          extractUrls(t2).forEach(show);
-        }
-      }
-
-      document.getElementById('status').textContent = found.size > 0
-        ? `Found ${found.size} link(s)!`
-        : 'Nothing found — fully blocked.';
+      document.getElementById('player').src = `https://embed.su/embed/movie/${id}`;
     }
   </script>
 </body>
