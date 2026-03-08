@@ -2,21 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>watch</title>
+  <title>watchv2</title>
 </head>
 <body>
   <h1>watch</h1>
   <input id="id" placeholder="IMDB ID (e.g. tt1234567)" />
   <button onclick="play()">play</button>
   <br><br>
-  <a id="link" href="#" target="_blank"></a>
+  <p id="status"></p>
+  <p id="result"></p>
+
+  <iframe id="frame" width="800" height="450" allowfullscreen allow="autoplay" style="display:none"></iframe>
 
   <script>
     function play() {
       const id = document.getElementById('id').value;
-      const url = `https://vidsrc.to/embed/movie/${id}`;
-      document.getElementById('link').href = url;
-      document.getElementById('link').textContent = url;
+      document.getElementById('status').textContent = 'Loading...';
+      document.getElementById('result').textContent = '';
+
+      window.addEventListener('message', function(e) {
+        const msg = JSON.stringify(e.data);
+        if (msg.includes('http') && (msg.includes('m3u8') || msg.includes('mp4') || msg.includes('cloudnestra'))) {
+          document.getElementById('status').textContent = 'Found:';
+          document.getElementById('result').innerHTML = `<a href="${e.data}" target="_blank">${e.data}</a>`;
+        }
+      });
+
+      const frame = document.getElementById('frame');
+      frame.style.display = 'block';
+      frame.src = `https://vidsrc.to/embed/movie/${id}`;
     }
   </script>
 </body>
