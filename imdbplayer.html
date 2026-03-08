@@ -6,15 +6,15 @@
 </head>
 <body>
   <h1>watch</h1>
-  <input id="id" placeholder="IMDB ID (e.g. tt1234567)" />
+  <input id="id" placeholder="TMDB ID" />
   <button onclick="play()">play</button>
   <br><br>
-  <iframe id="player" width="800" height="450" allowfullscreen allow="autoplay"></iframe>
+  <iframe id="player" width="800" height="450" allowfullscreen></iframe>
 
   <script>
     function play() {
-      const id = document.getElementById('id').value.trim();
-      document.getElementById('player').src = `https://embed.su/embed/movie/${id}`;
+      const id = document.getElementById('id').value;
+      document.getElementById('player').src = `https://vidsrc.to/embed/movie/${id}`;
     }
   </script>
 </body>
