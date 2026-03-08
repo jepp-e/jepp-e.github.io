@@ -9,12 +9,18 @@
   <input id="id" placeholder="IMDB ID (e.g. tt1234567)" />
   <button onclick="play()">play</button>
   <br><br>
-  <iframe id="player" width="800" height="450" allowfullscreen></iframe>
+  <div id="container" style="position:relative; width:800px; height:450px;">
+    <iframe id="player" width="800" height="450" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
+    <div id="blocker" style="position:absolute; inset:0; z-index:99;"></div>
+  </div>
 
   <script>
+    // Block popups opened by the iframe
+    window.open = () => null;
+
     function play() {
       const id = document.getElementById('id').value;
-      document.getElementById('player').src = `https://vidsrc.to/embed/movie/${id}`;
+      document.getElementById('player').src = `https://vidsrc.me/embed/movie?imdb=${id}`;
     }
   </script>
 </body>
