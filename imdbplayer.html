@@ -9,12 +9,14 @@
   <input id="id" placeholder="IMDB ID (e.g. tt1234567)" />
   <button onclick="play()">play</button>
   <br><br>
-  <iframe id="player" width="800" height="450" allowfullscreen></iframe>
+  <a id="link" href="#" target="_blank"></a>
 
   <script>
     function play() {
       const id = document.getElementById('id').value;
-      document.getElementById('player').src = `https://vidsrc.to/embed/movie/${id}`;
+      const url = `https://vidsrc.to/embed/movie/${id}`;
+      document.getElementById('link').href = url;
+      document.getElementById('link').textContent = url;
     }
   </script>
 </body>
