@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>watchv3</title>
+  <title>watch</title>
 </head>
 <body>
   <h1>watch</h1>
@@ -12,69 +12,73 @@
   <div id="links"></div>
 
   <script>
-    const PROXY = 'https://corsproxy.io/?';
-    const found = new Set();
+    const proxies = [
+      url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+      url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+      url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    ];
+
+    async function fetchWith(url) {
+      for (const proxy of proxies) {
+        try {
+          const res = await fetch(proxy(url), { signal: AbortSignal.timeout(5000) });
+          if (res.ok) return await res.text();
+        } catch {}
+      }
+      return '';
+    }
 
     function extractUrls(text) {
-      const patterns = [
-        /https?:\/\/[^\s"']+\.m3u8[^\s"']*/g,
-        /https?:\/\/[^\s"']+\.mp4[^\s"']*/g,
-        /https?:\/\/cloudnestra\.com\/[^\s"']*/g,
-        /https?:\/\/[^\s"']*vidsrc[^\s"']*/g,
-      ];
-      const urls = [];
-      for (const p of patterns) {
-        const matches = text.match(p) || [];
-        urls.push(...matches);
-      }
-      return urls;
-    }
-
-    function show(url) {
-      if (found.has(url)) return;
-      found.add(url);
-      const a = document.createElement('a');
-      a.href = url;
-      a.textContent = url;
-      a.target = '_blank';
-      a.style.display = 'block';
-      document.getElementById('links').appendChild(a);
-    }
-
-    async function fetchPage(url) {
-      try {
-        const res = await fetch(PROXY + encodeURIComponent(url));
-        return await res.text();
-      } catch { return ''; }
+      return [
+        ...text.matchAll(/https?:\/\/[^\s"'\\]+\.m3u8[^\s"'\\]*/g),
+        ...text.matchAll(/https?:\/\/[^\s"'\\]+\.mp4[^\s"'\\]*/g),
+        ...text.matchAll(/https?:\/\/cloudnestra\.com\/[^\s"'\\]*/g),
+      ].map(m => m[0]);
     }
 
     async function find() {
       const id = document.getElementById('id').value.trim();
-      found.clear();
       document.getElementById('links').innerHTML = '';
-      document.getElementById('status').textContent = 'Fetching...';
+      const found = new Set();
 
-      const sources = [
+      const show = url => {
+        if (found.has(url)) return;
+        found.add(url);
+        const a = document.createElement('a');
+        a.href = url; a.textContent = url; a.target = '_blank';
+        a.style.display = 'block';
+        document.getElementById('links').appendChild(a);
+      };
+
+      // Try vidsrc internal API endpoints
+      const apiUrls = [
+        `https://vidsrc.to/vapi/movie/imdb/${id}`,
+        `https://vidsrc.me/vapi/movie/${id}/1/1`,
+        `https://vidsrc.xyz/vapi/movie/${id}`,
         `https://vidsrc.to/embed/movie/${id}`,
-        `https://vidsrc.me/embed/movie?imdb=${id}`,
-        `https://vidsrc.xyz/embed/movie/${id}`,
       ];
 
-      for (const src of sources) {
-        document.getElementById('status').textContent = `Trying ${src}...`;
-        const html = await fetchPage(src);
-        extractUrls(html).forEach(show);
+      for (const url of apiUrls) {
+        document.getElementById('status').textContent = `Trying ${url}...`;
+        const text = await fetchWith(url);
+        extractUrls(text).forEach(show);
 
-        // find nested iframes and fetch those too
-        const iframeSrcs = [...html.matchAll(/iframe[^>]+src=["']([^"']+)/gi)].map(m => m[1]);
-        for (let s of iframeSrcs) {
-          if (s.startsWith('/')) s = new URL(src).origin + s;
-          const html2 = await fetchPage(s);
-          extractUrls(html2).forEach(show);
+        // chase nested src= and file: references
+        const nested = [
+          ...(text.matchAll(/["']src["']\s*:\s*["'](https?[^"']+)["']/g)),
+          ...(text.matchAll(/file\s*:\s*["'](https?[^"']+)["']/g)),
+          ...(text.matchAll(/src=["'](https?[^"']+)["']/g)),
+        ].map(m => m[1]);
+
+        for (const n of nested) {
+          const t2 = await fetchWith(n);
+          extractUrls(t2).forEach(show);
         }
       }
 
-      document.getElementById('status').textContent = found.size > 0 ? 'Done!' : 'Nothing found — they may be blocking proxy requests.';
+      document.getElementById('status').textContent = found.size > 0
+        ? `Found ${found.size} link(s)!`
+        : 'Nothing found — fully blocked.';
     }
   </script>
 </body>
