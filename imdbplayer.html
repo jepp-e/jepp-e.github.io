@@ -2,35 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>watchv2</title>
+  <title>watchv3</title>
 </head>
 <body>
   <h1>watch</h1>
   <input id="id" placeholder="IMDB ID (e.g. tt1234567)" />
-  <button onclick="play()">play</button>
-  <br><br>
+  <button onclick="find()">find stream</button>
   <p id="status"></p>
-  <p id="result"></p>
-
-  <iframe id="frame" width="800" height="450" allowfullscreen allow="autoplay" style="display:none"></iframe>
+  <div id="links"></div>
 
   <script>
-    function play() {
-      const id = document.getElementById('id').value;
-      document.getElementById('status').textContent = 'Loading...';
-      document.getElementById('result').textContent = '';
+    const PROXY = 'https://corsproxy.io/?';
+    const found = new Set();
 
-      window.addEventListener('message', function(e) {
-        const msg = JSON.stringify(e.data);
-        if (msg.includes('http') && (msg.includes('m3u8') || msg.includes('mp4') || msg.includes('cloudnestra'))) {
-          document.getElementById('status').textContent = 'Found:';
-          document.getElementById('result').innerHTML = `<a href="${e.data}" target="_blank">${e.data}</a>`;
+    function extractUrls(text) {
+      const patterns = [
+        /https?:\/\/[^\s"']+\.m3u8[^\s"']*/g,
+        /https?:\/\/[^\s"']+\.mp4[^\s"']*/g,
+        /https?:\/\/cloudnestra\.com\/[^\s"']*/g,
+        /https?:\/\/[^\s"']*vidsrc[^\s"']*/g,
+      ];
+      const urls = [];
+      for (const p of patterns) {
+        const matches = text.match(p) || [];
+        urls.push(...matches);
+      }
+      return urls;
+    }
+
+    function show(url) {
+      if (found.has(url)) return;
+      found.add(url);
+      const a = document.createElement('a');
+      a.href = url;
+      a.textContent = url;
+      a.target = '_blank';
+      a.style.display = 'block';
+      document.getElementById('links').appendChild(a);
+    }
+
+    async function fetchPage(url) {
+      try {
+        const res = await fetch(PROXY + encodeURIComponent(url));
+        return await res.text();
+      } catch { return ''; }
+    }
+
+    async function find() {
+      const id = document.getElementById('id').value.trim();
+      found.clear();
+      document.getElementById('links').innerHTML = '';
+      document.getElementById('status').textContent = 'Fetching...';
+
+      const sources = [
+        `https://vidsrc.to/embed/movie/${id}`,
+        `https://vidsrc.me/embed/movie?imdb=${id}`,
+        `https://vidsrc.xyz/embed/movie/${id}`,
+      ];
+
+      for (const src of sources) {
+        document.getElementById('status').textContent = `Trying ${src}...`;
+        const html = await fetchPage(src);
+        extractUrls(html).forEach(show);
+
+        // find nested iframes and fetch those too
+        const iframeSrcs = [...html.matchAll(/iframe[^>]+src=["']([^"']+)/gi)].map(m => m[1]);
+        for (let s of iframeSrcs) {
+          if (s.startsWith('/')) s = new URL(src).origin + s;
+          const html2 = await fetchPage(s);
+          extractUrls(html2).forEach(show);
         }
-      });
+      }
 
-      const frame = document.getElementById('frame');
-      frame.style.display = 'block';
-      frame.src = `https://vidsrc.to/embed/movie/${id}`;
+      document.getElementById('status').textContent = found.size > 0 ? 'Done!' : 'Nothing found — they may be blocking proxy requests.';
     }
   </script>
 </body>
