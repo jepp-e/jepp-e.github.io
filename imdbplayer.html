@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>watch</title>
+</head>
+<body>
+  <h1>watch</h1>
+  <input id="id" placeholder="TMDB ID" />
+  <button onclick="play()">play</button>
+  <br><br>
+  <iframe id="player" width="800" height="450" allowfullscreen></iframe>
+
+  <script>
+    function play() {
+      const id = document.getElementById('id').value;
+      document.getElementById('player').src = `https://vidsrc.to/embed/movie/${id}`;
+    }
+  </script>
+</body>
+</html>
